@@ -62,12 +62,9 @@ void Graph::primMST(int src) {
         if(vis.find(u)!= vis.end()) continue; // Skip if already visited
         vis.insert(u);
 
-        //Only increment total_count if this is not the starting node
         if (parent[u] != -1) result+=key[u]; //add edge weight only if it is real edge
 
         total_count++;
-        
-        // Add the weight of the edge to the result
         
         for (int i = 0; i < adj[u].size(); ++i) {
             int v = adj[u][i].first;
