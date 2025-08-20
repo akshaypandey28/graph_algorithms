@@ -35,7 +35,10 @@ int main() {
         cin >> src;
         g.dijkstra(src);
     } else if (choice == 2) {
-        g.primMST();
+        int src;
+        cout << "Enter source node for Prim's MST (default is 0): ";
+        cin >> src;
+        g.primMST(src);
     } else {
         cout << "Invalid choice.\n";
     }

@@ -1,7 +1,9 @@
 #include "Graph.h"
 #include <iostream>
 #include <queue>
-#include <limits>
+#include<climits>
+#include<unordered_set>
+#define pp pair<int,int>
 Graph::Graph(int V) : V(V) {
     adj.resize(V);
 }
@@ -11,19 +13,21 @@ void Graph::addEdge(int u, int v, int w) {
 }
 
 void Graph::dijkstra(int src) {
-    vector<int> dist(V, numeric_limits<int>::max());
+    vector<int> dist(V, INT_MAX);
     dist[src] = 0;
-
-    typedef pair<int, int> pii;
-    priority_queue<pii, vector<pii>, greater<pii>> pq;
-    pq.push(make_pair(0, src));
+    unordered_set<int> vis;
+    priority_queue<pp, vector<pp>, greater<pp>> pq;
+    pq.push({0, src}); // {distance, node}
 
     while (!pq.empty()) {
-        int u = pq.top().second;
-        int d = pq.top().first;
+        int u = pq.top().second; //node
+        int d = pq.top().first; //distance
+        if(vis.find(u) != vis.end()) {  // Skip if already visited
+            pq.pop();
+            continue; 
+        }
         pq.pop();
-
-        if (d > dist[u]) continue;
+        vis.insert(u);
 
         for (int i = 0; i < adj[u].size(); ++i) {
             int v = adj[u][i].first;
@@ -31,7 +35,7 @@ void Graph::dijkstra(int src) {
 
             if (dist[v] > dist[u] + w) {
                 dist[v] = dist[u] + w;
-                pq.push(make_pair(dist[v], v));
+                pq.push({dist[v], v});
             }
         }
     }
@@ -41,35 +45,45 @@ void Graph::dijkstra(int src) {
         cout << "Node " << i << " - Distance: " << dist[i] << "\n";
 }
 
-void Graph::primMST() {
-    vector<int> key(V, numeric_limits<int>::max());
-    vector<bool> inMST(V, false);
+void Graph::primMST(int src) {
+    priority_queue<pp, vector<pp>, greater<pp>> pq;
+    vector<int> key(V, INT_MAX);
+    unordered_set<int> vis;
     vector<int> parent(V, -1);
-    key[0] = 0;
-
-    typedef pair<int, int> pii;
-    priority_queue<pii, vector<pii>, greater<pii>> pq;
-    pq.push(make_pair(0, 0));
-
-    while (!pq.empty()) {
-        int u = pq.top().second;
+    key[src] = 0;
+    int total_count=0; //keeps track of no. of vertices have been added to the MST
+    int result=0; //it gives the total weight of the MST
+    pq.push(make_pair(0, src)); //weight and node
+    
+    while (total_count < V and !pq.empty()) {
+        pp curr=pq.top();
         pq.pop();
+        int u= curr.second; //current node
+        if(vis.find(u)!= vis.end()) continue; // Skip if already visited
+        vis.insert(u);
 
-        inMST[u] = true;
+        //Only increment total_count if this is not the starting node
+        if (parent[u] != -1) result+=key[u]; //add edge weight only if it is real edge
 
+        total_count++;
+        
+        // Add the weight of the edge to the result
+        
         for (int i = 0; i < adj[u].size(); ++i) {
             int v = adj[u][i].first;
             int w = adj[u][i].second;
 
-            if (!inMST[v] && w < key[v]) {
+            if (vis.find(v)==vis.end() and w < key[v]) {
                 key[v] = w;
-                pq.push(make_pair(key[v], v));
+                pq.push({key[v], v});
                 parent[v] = u;
             }
         }
     }
 
     cout << "\nPrim's MST:\n";
-    for (int i = 1; i < V; ++i)
-        cout << "Edge: " << parent[i] << " - " << i << " | Weight: " << key[i] << "\n";
+    for (int i = 0; i < V; ++i)
+        cout << "Edge: " << parent[i] << " to " << i << " | Weight: " << key[i] << "\n";
+
+    cout << "Total weight of MST: " << result << "\n";
 }
