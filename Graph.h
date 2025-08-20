@@ -10,4 +10,5 @@ public:
     void addEdge(int u, int v, int w);
     void dijkstra(int src);
     void primMST(int src = 0); // Default source for Prim's MST
+    void kruskalMST();
 };

@@ -26,6 +26,7 @@ int main() {
     cout << "\nChoose algorithm:\n";
     cout << "Choose 1 for Dijkstra\n";
     cout << "Choose 2 for Prim's MST\n";
+    cout << "Choose 3 for Kruskal's MST\n";
     cout << "Choice: ";
     cin >> choice;
 
@@ -39,8 +40,12 @@ int main() {
         cout << "Enter source node for Prim's MST (default is 0): ";
         cin >> src;
         g.primMST(src);
-    } else {
-        cout << "Invalid choice.\n";
+    }
+    else if(choice==3) {
+        g.kruskalMST(); 
+    }
+    else {
+        cout << "Invalid choice!" << endl;
     }
 
     return 0;

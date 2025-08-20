@@ -1,2 +1,2 @@
 # to run `.\graph.exe`
-# implement algorithms for Dijkstra and Prim's
+# implement algorithms for Dijkstra , Prim's , Kruskal's
